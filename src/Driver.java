@@ -4,32 +4,15 @@ import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
 public class Driver {
 
+
+
     public static void main(String[] args) throws PythonExecutionException, IOException {
-
-        /*
-
-        Set<String> allZones = ZoneId.getAvailableZoneIds();
-        LocalDateTime dt = LocalDateTime.now();
-
-        List<String> zoneList = new ArrayList<>(allZones);
-        Collections.sort(zoneList);
-
-        for (String s : zoneList) {
-            ZoneId zone = ZoneId.of(s);
-            ZonedDateTime zdt = dt.atZone(zone);
-            ZoneOffset offset = zdt.getOffset();
-            String out = String.format("%35s %10s%n", zone, offset);
-            System.out.println(out);
-
-        }
-
-
-         */
 
         Scanner sc = null;
         ArrayList<String> locations = new ArrayList<>();
@@ -46,42 +29,16 @@ public class Driver {
         sc.close();  //closes the scanner
 
         locations.remove(0);
-        System.out.println(locations.get(0));
 
         ArrayList<City> locs = new ArrayList<City>();
 
         for (String str:locations){
             String[] parts = str.split(",");
-
-            //String city = parts[5] +"/"+parts[1];
-            //ZoneOffset offset;
-            /*
-            if(zoneList.contains(city)){
-                ZoneId zone = ZoneId.of(city);
-                ZonedDateTime zdt = dt.atZone(zone);
-                offset = zdt.getOffset();
-            }
-            else{
-
-                ZoneId zone = ZoneId.of(parts[0]);
-                ZonedDateTime zdt = dt.atZone(zone);
-                offset = zdt.getOffset();
-
-            }
-
-             */
-            // City ci = new City(parts[1], Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[0], parts[5], null);
-            // Country,Capital,Latitude,Longitude
-
-            Maths mymaths = new Maths();
-
             City ci = new City(parts[1],Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[0]);
             locs.add(ci);
         }
 
-        for (City c: locs) {
-            System.out.println(c);
-        }
+
 
         Collections.sort(locs);
         Collections.reverse(locs);
@@ -103,20 +60,29 @@ public class Driver {
             }
         }
 
-        ArrayList<Integer> offsets = new ArrayList<Integer>();
+        // ArrayList<Integer> offsets = new ArrayList<Integer>();
 
+        double maxL = 180;
+        double minL = -180;
+        int numOfTimeZones = 15;
 
-        for (int i = 0; i < latitude.size(); i++) {
-            double newLat = myMaths.normalize(latitude.get(i), latitude.get(myMaths.getIndexOfMin(latitude)), latitude.get(myMaths.getIndexOfMax(latitude)));
-            offsets.add((int) newLat);
+        for (int i = 0; i < longitude.size(); i++) {
+            double normLong = Math.round(longitude.get(i) / numOfTimeZones);
+            locs.get(i).setOffset((int) normLong);
+        }
+
+        for (City c: locs) {
+            System.out.println(c);
         }
 
         Plot plt = Plot.create();
         plt.plot().add(longitude, latitude, "bo-").label("Locations");
 
+        /*
         for (int i = 0; i < locs.size(); i++) {
             plt.text(longitude.get(i), latitude.get(i), city.get(i));
         }
+        */
 
         plt.legend().loc("upper right");
         plt.title("Santa's Route");
@@ -128,11 +94,11 @@ public class Driver {
             total = total + d;
         }
 
-        System.out.println("Total : " + total);
+        System.out.println("Distance : " +total+ " Kilometers");
 
-        for (Integer i : offsets) {
-            System.out.println(offsets);
-        }
+        total = total / 24;
+
+        System.out.println("Speed : " +total+ " Kilometers per hour");
 
 
 

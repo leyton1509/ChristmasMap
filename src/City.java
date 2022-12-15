@@ -1,5 +1,3 @@
-import java.time.ZoneOffset;
-
 class City implements Comparable<City>{
     private String name;
 
@@ -9,7 +7,7 @@ class City implements Comparable<City>{
     private double latitude;
     private double longitude;
 
-    private ZoneOffset offset;
+    private int offset = 0;
 
     public String getName() {
         return name;
@@ -31,16 +29,11 @@ class City implements Comparable<City>{
         return continent;
     }
 
-    public ZoneOffset getOffset() {
+    public int getOffset() {
         return offset;
     }
 
-    public City(String name, double latitude, double longitude, String country, String continent, ZoneOffset offset) {
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.continent = continent;
-        this.country = country;
+    public void setOffset(int offset) {
         this.offset = offset;
     }
 
@@ -52,7 +45,7 @@ class City implements Comparable<City>{
     }
 
     public String toString(){
-        return country + " , " + name + " , " + offset;
+        return country + " , " + name+ " , " + latitude + " , " + longitude + " , " + offset;
     }
 
     @Override
