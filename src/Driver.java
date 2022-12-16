@@ -8,11 +8,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+/**
+ * Main class to run the program
+ * Finds the distance and speed santa needs, close the map to get the results in the terminal
+ */
 public class Driver {
 
-
-
+    /**
+     * Main method to run program
+     * @param args Arguments none
+     * @throws PythonExecutionException e
+     * @throws IOException e
+     */
     public static void main(String[] args) throws PythonExecutionException, IOException {
+
+        // Creates a string array from a csv file from the internet with the locations of each capital
 
         Scanner sc = null;
         ArrayList<String> locations = new ArrayList<>();
@@ -28,9 +38,16 @@ public class Driver {
         }
         sc.close();  //closes the scanner
 
+        // Removes the header
+
         locations.remove(0);
 
-        ArrayList<City> locs = new ArrayList<City>();
+        // Creates an array list of cities
+
+        ArrayList<City> locs = new ArrayList<>();
+
+        // Splits each string from each ,
+        // Puts the correct info into city
 
         for (String str:locations){
             String[] parts = str.split(",");
@@ -38,16 +55,23 @@ public class Driver {
             locs.add(ci);
         }
 
-
+        // Sorts the locations based on the longitude
+        // Reverses the list
 
         Collections.sort(locs);
         Collections.reverse(locs);
 
-        ArrayList<Double> distances = new ArrayList<Double>();
-        ArrayList<Double> latitude = new ArrayList<Double>();
-        ArrayList<Double> longitude = new ArrayList<Double>();
-        ArrayList<String> city = new ArrayList<String>();
+        // Creates different array lists to store needed info for displaying and calculating
+
+        ArrayList<Double> distances = new ArrayList<>();
+        ArrayList<Double> latitude = new ArrayList<>();
+        ArrayList<Double> longitude = new ArrayList<>();
+        ArrayList<String> city = new ArrayList<>();
+
         Maths myMaths = new Maths();
+
+        // Loops through each city, adds the lat and long and city name
+        // Works out the distances between the node and next node in array
 
         for (int i = 0; i < locs.size(); i++) {
             City c = locs.get(i);
@@ -60,10 +84,8 @@ public class Driver {
             }
         }
 
-        // ArrayList<Integer> offsets = new ArrayList<Integer>();
-
-        double maxL = 180;
-        double minL = -180;
+        // Works out the time zone of each city based on longitude
+        // Not needed now as we took an assumption later
         int numOfTimeZones = 15;
 
         for (int i = 0; i < longitude.size(); i++) {
@@ -71,22 +93,32 @@ public class Driver {
             locs.get(i).setOffset((int) normLong);
         }
 
+        /*
         for (City c: locs) {
             System.out.println(c);
         }
+         */
+
+        // Creates a plot using matplotlib
+        // Adds the longs and lats
 
         Plot plt = Plot.create();
         plt.plot().add(longitude, latitude, "bo-").label("Locations");
 
+        // Option to add the names of cities (becomes unreadable on small screens)
         /*
         for (int i = 0; i < locs.size(); i++) {
             plt.text(longitude.get(i), latitude.get(i), city.get(i));
         }
         */
 
+        // Sets title and shows map
+
         plt.legend().loc("upper right");
         plt.title("Santa's Route");
         plt.show();
+
+        // Works out the total distance travelled
 
         double total = 0;
 
@@ -96,14 +128,12 @@ public class Driver {
 
         System.out.println("Distance : " +total+ " Kilometers");
 
+        // He has 24 hours based on having the hours of 12-2am for 24 time zones but would only be able to spend 1 hour in each zone
+
         total = total / 24;
 
         System.out.println("Speed : " +total+ " Kilometers per hour");
 
-
-
     }
-
-
 
 }
